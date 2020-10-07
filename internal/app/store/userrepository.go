@@ -9,6 +9,10 @@ type UserRepository struct {
 
 // Create ...
 func (r *UserRepository) Create(u *entity.User) (*entity.User, error) {
+	if err := u.Validate(); err != nil {
+		return nil, err
+	}
+
 	if err := u.BeforeCreate(); err != nil {
 		return nil, err
 	}
