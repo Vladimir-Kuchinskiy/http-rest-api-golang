@@ -1,3 +1,4 @@
 bind_addr = ":8080"
 log_level = "info"
 database_url = "host=localhost port=5432 user=http_golang password=password dbname=http_golang sslmode=disable"
+session_key = "4E07077D31D87276164109142D201625"
