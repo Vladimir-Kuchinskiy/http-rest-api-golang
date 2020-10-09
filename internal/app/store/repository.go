@@ -8,4 +8,5 @@ import (
 type UserRepository interface {
 	Create(*entity.User) error
 	FindByEmail(string) (*entity.User, error)
+	Find(int) (*entity.User, error)
 }

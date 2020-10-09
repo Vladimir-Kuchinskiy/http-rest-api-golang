@@ -23,7 +23,7 @@ func (s *Store) User() store.UserRepository {
 
 	s.userRepository = &UserRepository{
 		store: s,
-		users: make(map[string]*entity.User),
+		users: make(map[int]*entity.User),
 	}
 
 	return s.userRepository
