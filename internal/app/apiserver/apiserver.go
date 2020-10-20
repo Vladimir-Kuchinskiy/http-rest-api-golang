@@ -12,6 +12,7 @@ import (
 // Start ...
 func Start(config *Config) error {
 	db, err := newDB(config.DatabaseURL)
+
 	if err != nil {
 		return err
 	}
@@ -19,7 +20,7 @@ func Start(config *Config) error {
 
 	store := sqlstore.New(db)
 	sessionStore := sessions.NewCookieStore([]byte(config.SessionKey))
-	srv := newServer(store, sessionStore)
+	srv := newServer(store, sessionStore, db)
 
 	return http.ListenAndServe(config.BindAddr, srv)
 }
