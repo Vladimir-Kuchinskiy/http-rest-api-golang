@@ -4,36 +4,39 @@ import (
 	"database/sql"
 	"net/http"
 
-	"github.com/gorilla/sessions"
-
-	"github.com/Vladimir-Kuchinskiy/http-rest-api-golang/internal/app/store/sqlstore"
+	"github.com/Vladimir-Kuchinskiy/http-rest-api-golang/internal/app/adapters/database"
+	"github.com/Vladimir-Kuchinskiy/http-rest-api-golang/internal/app/authentication"
+	"github.com/Vladimir-Kuchinskiy/http-rest-api-golang/internal/app/users"
 )
 
 // Start ...
 func Start(config *Config) error {
-	db, err := newDB(config.DatabaseURL)
+	db, err := database.NewDB(config.DatabaseURL)
 
 	if err != nil {
 		return err
 	}
+
 	defer db.Close()
 
-	store := sqlstore.New(db)
-	sessionStore := sessions.NewCookieStore([]byte(config.SessionKey))
-	srv := newServer(store, sessionStore, db)
+	srv := newServer(buildDeps(db))
+
+	configureRouter(srv)
 
 	return http.ListenAndServe(config.BindAddr, srv)
 }
 
-func newDB(databaseURL string) (*sql.DB, error) {
-	db, err := sql.Open("postgres", databaseURL)
-	if err != nil {
-		return nil, err
-	}
+func buildDeps(db *sql.DB) *deps {
+	usersRepository := users.NewRepository(db)
 
-	if err := db.Ping(); err != nil {
-		return nil, err
-	}
+	usersService := users.NewService(usersRepository)
+	authenticationService := authentication.NewService()
 
-	return db, nil
+	return &deps{
+		usersController: users.NewController(usersService),
+		authenticationController: authentication.NewController(
+			authenticationService,
+			usersRepository,
+		),
+	}
 }

@@ -1,30 +1,30 @@
-package entity_test
+package users_test
 
 import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/Vladimir-Kuchinskiy/http-rest-api-golang/internal/app/entity"
+	"github.com/Vladimir-Kuchinskiy/http-rest-api-golang/internal/app/users"
 )
 
 func TestUser_Validate(t *testing.T) {
 	testCases := []struct {
 		desc    string
-		u       func() *entity.User
+		u       func() *users.User
 		isValid bool
 	}{
 		{
 			desc: "When user is valid",
-			u: func() *entity.User {
-				return entity.TestUser(t)
+			u: func() *users.User {
+				return users.TestUser(t)
 			},
 			isValid: true,
 		},
 		{
 			desc: "When user has EnrcyptedPassword",
-			u: func() *entity.User {
-				u := entity.TestUser(t)
+			u: func() *users.User {
+				u := users.TestUser(t)
 				u.Password = ""
 				u.EncryptedPassword = "encrypted-password"
 
@@ -34,8 +34,8 @@ func TestUser_Validate(t *testing.T) {
 		},
 		{
 			desc: "When user has NO Email",
-			u: func() *entity.User {
-				u := entity.TestUser(t)
+			u: func() *users.User {
+				u := users.TestUser(t)
 				u.Email = ""
 
 				return u
@@ -44,8 +44,8 @@ func TestUser_Validate(t *testing.T) {
 		},
 		{
 			desc: "When user has invalid Email",
-			u: func() *entity.User {
-				u := entity.TestUser(t)
+			u: func() *users.User {
+				u := users.TestUser(t)
 				u.Email = "invalid"
 
 				return u
@@ -54,8 +54,8 @@ func TestUser_Validate(t *testing.T) {
 		},
 		{
 			desc: "When user has NO Password",
-			u: func() *entity.User {
-				u := entity.TestUser(t)
+			u: func() *users.User {
+				u := users.TestUser(t)
 				u.Password = ""
 
 				return u
@@ -64,8 +64,8 @@ func TestUser_Validate(t *testing.T) {
 		},
 		{
 			desc: "When user has invalid Password",
-			u: func() *entity.User {
-				u := entity.TestUser(t)
+			u: func() *users.User {
+				u := users.TestUser(t)
 				u.Password = "123"
 
 				return u
@@ -85,7 +85,7 @@ func TestUser_Validate(t *testing.T) {
 }
 
 func TestUser_BeforeCreate(t *testing.T) {
-	u := entity.TestUser(t)
+	u := users.TestUser(t)
 
 	assert.NoError(t, u.BeforeCreate())
 	assert.NotEmpty(t, u.EncryptedPassword)

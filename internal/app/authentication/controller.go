@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -59,7 +58,6 @@ func (c *Controller) AuthenticateUser(next http.Handler) http.Handler {
 			httphelper.RespondWithError(w, r, http.StatusUnauthorized, errNotAuthenticated)
 			return
 		}
-		fmt.Println("u:", u)
 
 		next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), httphelper.CtxKeyUser, u)))
 	})
@@ -98,6 +96,22 @@ func (c *Controller) HandleAuth() http.HandlerFunc {
 			HttpOnly: true,
 		}
 		http.SetCookie(w, cookie)
+
+		httphelper.Respond(w, r, http.StatusOK, nil)
+	}
+}
+
+// HandleUnauth ...
+func (c *Controller) HandleUnauth() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		c, err := r.Cookie(authTokenKey)
+		if err != nil {
+			httphelper.RespondWithError(w, r, http.StatusUnauthorized, err)
+			return
+		}
+
+		c.MaxAge = -1
+		http.SetCookie(w, c)
 
 		httphelper.Respond(w, r, http.StatusOK, nil)
 	}

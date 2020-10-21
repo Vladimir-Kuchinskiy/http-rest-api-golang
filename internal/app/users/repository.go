@@ -3,7 +3,9 @@ package users
 import (
 	"database/sql"
 
-	"github.com/Vladimir-Kuchinskiy/http-rest-api-golang/internal/app/store"
+	_ "github.com/lib/pq" // ...
+
+	"github.com/Vladimir-Kuchinskiy/http-rest-api-golang/internal/database"
 )
 
 // RepositoryI ...
@@ -50,7 +52,7 @@ func (r *Repository) FindByEmail(email string) (*User, error) {
 		email,
 	).Scan(&u.ID, &u.Email, &u.EncryptedPassword); err != nil {
 		if err == sql.ErrNoRows {
-			return nil, store.ErrRecordNotFound
+			return nil, database.ErrRecordNotFound
 		}
 
 		return nil, err
@@ -67,7 +69,7 @@ func (r *Repository) Find(id int) (*User, error) {
 		id,
 	).Scan(&u.ID, &u.Email, &u.EncryptedPassword); err != nil {
 		if err == sql.ErrNoRows {
-			return nil, store.ErrRecordNotFound
+			return nil, database.ErrRecordNotFound
 		}
 
 		return nil, err

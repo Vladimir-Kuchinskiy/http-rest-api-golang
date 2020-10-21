@@ -1,4 +1,4 @@
-package sqlstore
+package database
 
 import (
 	"database/sql"
@@ -7,11 +7,13 @@ import (
 	"testing"
 )
 
+var testDatabaseURL = "host=localhost port=5432 user=http_golang_test password=password dbname=http_golang_test sslmode=disable"
+
 // TestDB ...
-func TestDB(t *testing.T, databaseURL string) (*sql.DB, func(...string)) {
+func TestDB(t *testing.T) (*sql.DB, func(...string)) {
 	t.Helper()
 
-	db, err := sql.Open("postgres", databaseURL)
+	db, err := sql.Open("postgres", testDatabaseURL)
 
 	if err != nil {
 		t.Fatal(err)
