@@ -3,11 +3,11 @@
 #### Migrations
 
 ##### To migrate local development database run:
-```
+```bash
 migrate -path migrations -database "postgres://http_golang:password@localhost/http_golang?sslmode=disable" up
 ```
 
 ##### To migrate local testing database run:
-```
+```bash
 migrate -path migrations -database "postgres://http_golang_test:password@localhost/http_golang_test?sslmode=disable" up
 ```
